@@ -30,11 +30,7 @@ jobs:
      
       # Step 4: Install Allure Command-Line Tool
       - name: Install Allure
-        run: |
-          curl -o allure.zip -L https://github.com/allure-framework/allure2/releases/latest/download/allure-commandline.zip
-          powershell -Command "Expand-Archive -Path allure.zip -DestinationPath allure-cli"
-          setx PATH "%cd%\\allure-cli\\bin;%PATH%"
-        shell: cmd
+        run: scoop install allure
 
       # Step 5: Verify Allure Installation
       - name: Verify Allure Installation
