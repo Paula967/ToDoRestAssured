@@ -31,3 +31,7 @@ jobs:
       # Step 4: Run Maven clean test
       - name: Run tests
         run: mvn clean test
+
+      # Step 5: Run Allure Report
+      - name: Run Allure Report
+        run: allure serve allure-results
