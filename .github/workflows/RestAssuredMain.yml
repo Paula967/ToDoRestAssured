@@ -28,25 +28,31 @@ jobs:
           distribution: 'temurin'
           cache: maven
      
-      # Step 4: Install Allure Command-Line Tool
-      - name: Install Allure
-        run: scoop install allure
-
-      # Step 5: Verify Allure Installation
-      - name: Verify Allure Installation
-        run: allure --version
-
+    
       # Step 6: Run Maven Tests
       - name: Run Tests
         run: mvn clean test
 
-      # Step 7: Generate Allure Report
-      - name: Generate Allure Report
-        run: allure generate target/allure-results -o target/allure-report
-
-      # Step 8: Upload Allure Report as Artifact (Optional)
-      - name: Upload Allure Report
-        uses: actions/upload-artifact@v3
+      - name: Load test report history
+        uses: actions/checkout@v3
+        if: always()
+        continue-on-error: true
         with:
-          name: allure-report
-          path: target/allure-report
+          ref: master
+          path: master
+
+      - name: Build test report
+        uses: simple-elf/allure-report-action@v1.7
+        if: always()
+        with:
+          gh_pages: master
+          allure_history: allure-history
+          allure_results: build/allure-results
+
+      - name: Publish test report
+        uses: peaceiris/actions-gh-pages@v3
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: master
+          publish_dir: allure-history
