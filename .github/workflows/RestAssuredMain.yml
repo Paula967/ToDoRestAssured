@@ -37,3 +37,32 @@ jobs:
       - name: Generate Allure Report
         run: |
           mvn allure:report
+      # Step 4: Install Allure Command-Line Tool
+      - name: Install Allure
+        run: |
+          curl -o allure.zip -L https://github.com/allure-framework/allure2/releases/latest/download/allure-commandline.zip
+          powershell -Command "Expand-Archive -Path allure.zip -DestinationPath allure-cli"
+          setx PATH "%cd%\\allure-cli\\bin;%PATH%"
+        shell: cmd
+
+      # Step 5: Verify Allure Installation
+      - name: Verify Allure Installation
+        run: |
+          allure --version
+
+      # Step 6: Run Maven Tests
+      - name: Run Tests
+        run: |
+          mvn clean test
+
+      # Step 7: Generate Allure Report
+      - name: Generate Allure Report
+        run: |
+          allure generate target/allure-results -o target/allure-report
+
+      # Step 8: Upload Allure Report as Artifact (Optional)
+      - name: Upload Allure Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: allure-report
+          path: target/allure-report
